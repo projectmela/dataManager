@@ -1,3 +1,9 @@
+# The code is supposed to use a csv file and videos to extract required number of frames from the videos
+# These frames can be used to annotation or other purposes 
+# As of 20231206 : The code is hardcoded and works with particular file format exported from a file created in Notion
+# Sample file is uploaded with this repository 
+
+
 import argparse
 import os
 import pandas as pd
