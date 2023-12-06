@@ -42,14 +42,14 @@ def rename_files(files, updatedNames):
 
 def print_files_from_dir(found_files):
     # printing the files 
-    print(f"\n Total no of files: {len(found_files)}, \nNaming sample: {found_files[0]}")
+    print(f"\nTotal no of files: {len(found_files)} \nNaming sample: {found_files[0]}")
 
 def main():
     parser = argparse.ArgumentParser(description="Print an argument")
     parser.add_argument("--input", "-i", type=str, help="The path for data")
     parser.add_argument("--date", "-d", type=str, help="Set the date for which the data is to be produced.")
     parser.add_argument("--format", "-f", type=str, help="Format of the file", default=".SRT")
-    parser.add_argument("--rename", "-r", type=str, help="Rename the files", default=False)
+    parser.add_argument("--rename", "-r", type=bool, help="Rename the files", default=False)
 
     args = parser.parse_args()
 
@@ -81,6 +81,7 @@ def main():
         updatedName = update_file_name(found_files, date)
         # Update only if the query names already do not exist in file names, if so then operation is aborted. 
         if len(updatedName):
+            print("\n Update can be initiated with following convention.  ")
             print_files_from_dir(updatedName)
         else:
             print("No updated names found, aborting renaming.")
@@ -92,11 +93,12 @@ def main():
         if len(updatedName):
             # Currently only supports if the length is equal.
             rename_files(found_files,updatedName)
-            print("Updated names:")
-            #print_files_from_dir(find_files(dir_path_date, file_format_to_find))
+            print("Renaming complete")
+            print_files_from_dir(find_files(dir_path_date, file_format_to_find))
 
     else:
         print("Renaming option is disabled. ")
+        
 
 
 if __name__ == "__main__":
