@@ -87,6 +87,7 @@ def main():
     renaming_status = args.rename 
     date = ""
 
+    ###### STEp 1 : Check if required data exists
     # If a data is given for processing renaming find suitable files 
     if args.date:
         date = args.date
@@ -97,29 +98,32 @@ def main():
     else:
         #In case when date is not provided take the given path as default
         dir_path_date = dir_path
+    
+    ##### STEP 2 : Remove unwanted files
 
+    # Hidden files : It was obsereved that some hidden files do exist when copied, it is good to point it out and delete. 
+    hidden_files = find_hidden_files(dir_path)
+    print(f"Hidden files:{len(hidden_files)} \n")
+    print_files(hidden_files)
     # If the hidden fu
     if (args.hidden):
-        hidden_files = find_hidden_files(dir_path)
-        print(f"Hidden files:{len(hidden_files)} \n")
         if len(hidden_files):
-            print_files(hidden_files)
+            #print_files(hidden_files)
             remove_files(hidden_files)
             print("Hidden files removed.\n")
     else:
         print("Hidden files not deleted.")
 
+    ##### STEP 3 : Find files to rename
     # Find the required files in the directory
     found_files = find_files(dir_path_date, file_format_to_find)
-    print("Files considered for renaming:\n")
-    print_files(found_files)
-
+    print(f"Files considered for renaming:{len(found_files)}\n")
     # Update names only if date is given as query
     if date:
         updatedName = update_file_name(found_files, date)
         # Update only if the query names already do not exist in file names, if so then operation is aborted.
         if len(updatedName):
-            print("Details after reaming:\n")
+            print("Proposed file names after renaming:\n")
             print_files(updatedName)
         else:
             print("No updated names found, aborting renaming. \n")
