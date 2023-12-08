@@ -54,7 +54,7 @@ def main():
     parser.add_argument("--input", "-i", type=str, help="The path for data")
     parser.add_argument("--date", "-d", type=str, help="Set the date for which the data is to be produced.")
     parser.add_argument("--format", "-f", type=str, help="Format of the file", default=".SRT")
-    parser.add_argument("--rename", "-r", help="Rename the files", action="store_true", default= False)
+    parser.add_argument("--rename", "-r", help="Use the flag to enable renaming function.", action="store_true", default= False)
 
     args = parser.parse_args()
 
