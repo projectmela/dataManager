@@ -48,7 +48,8 @@ def rename_files(files, updatedNames):
 
 def print_files_from_dir(found_files):
     # printing the files 
-    print(f"\nTotal no of files: {len(found_files)} \nNaming sample: {found_files[0]}")
+    for files in found_files:
+        print(f"\n Total no of files: {len(found_files)} \n Naming convention: {files}")
 
 def main():
     parser = argparse.ArgumentParser(description="Print an argument")
@@ -85,7 +86,7 @@ def main():
     # Update names only if date is given as query
     if date:
         updatedName = update_file_name(found_files, date)
-        # Update only if the query names already do not exist in file names, if so then operation is aborted. 
+        # Update only if the query names already do not exist in file names, if so then operation is aborted.
         if len(updatedName):
             print("\n Update can be initiated with following convention.  ")
             print_files_from_dir(updatedName)
