@@ -26,6 +26,7 @@ def update_file_name(files, queryDate):
         # Split the name of the file using the date 
         new_name = queryDate + file.split(queryDate)[1]
         # Create a new name for the file starting with the data
+        new_name = new_name.replace("/","_")
         system = platform.system()
         if system == "Windows":
             new_name = new_name.replace("\\","_")
