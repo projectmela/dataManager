@@ -15,6 +15,16 @@ def find_files(directory, file_format):
                           
     return file_paths
 
+def find_hidden_files(directory):
+    hidden_files = []
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.startswith('.') or any(part.startswith('.') for part in file.split('/')):
+                hidden_files.append(os.path.join(root, file))
+
+    return hidden_files
+
 def update_file_name(files, queryDate):
     updatedNames = []
     for file in files: 
@@ -46,10 +56,17 @@ def rename_files(files, updatedNames):
             os.rename(old,new_revised_path)
 
 
-def print_files_from_dir(found_files):
+def print_files(found_files):
     # printing the files 
+    print(f"Total no of files: {len(found_files)}\n")
     for files in found_files:
-        print(f"\n Total no of files: {len(found_files)} \n Naming convention: {files}")
+        print(f"File name: {files}\n")
+
+def remove_files( files ):
+    for file in files:
+        if os.path.exists(file):
+            os.remove(file)
+            print(f"Deleted hidden file: {file}")
 
 def main():
     parser = argparse.ArgumentParser(description="Print an argument")
@@ -57,10 +74,12 @@ def main():
     parser.add_argument("--date", "-d", type=str, help="Set the date for which the data is to be produced.")
     parser.add_argument("--format", "-f", type=str, help="Format of the file", default=".SRT")
     parser.add_argument("--rename", "-r", help="Use the flag to enable renaming function.", action="store_true", default= False)
+    parser.add_argument("--hidden", help="Enable function to find and delete hidden files.", action="store_true", default= False)
+
 
     args = parser.parse_args()
 
-    print(f"\n The directory for renmaing: {args.input} \n Query = {args.date} \n File format = {args.format} \n Renaming status : {args.rename}")
+    print(f"\nThe directory for renmaing: {args.input} \nQuery = {args.date} \nFile format = {args.format} \nRenaming status : {args.rename} \nDeleting hidden files:{args.hidden} \n")
 
     file_format_to_find = args.format
     dir_path = args.input
@@ -73,28 +92,40 @@ def main():
         date = args.date
         dir_path_date = os.path.join(dir_path, date)
         if not os.path.exists(dir_path_date):
-            print(f"The give path does not exist, check path or date \n {dir_path_date}")
+            print(f"The give path does not exist, check path or date:\n{dir_path_date}")
             exit(0)
     else:
         #In case when date is not provided take the given path as default
         dir_path_date = dir_path
 
+    # If the hidden fu
+    if (args.hidden):
+        hidden_files = find_hidden_files(dir_path)
+        print(f"Hidden files:{len(hidden_files)} \n")
+        if len(hidden_files):
+            print_files(hidden_files)
+            remove_files(hidden_files)
+            print("Hidden files removed.\n")
+    else:
+        print("Hidden files not deleted.")
+
     # Find the required files in the directory
     found_files = find_files(dir_path_date, file_format_to_find)
-    print_files_from_dir(found_files)
+    print("Files considered for renaming:\n")
+    print_files(found_files)
 
     # Update names only if date is given as query
     if date:
         updatedName = update_file_name(found_files, date)
         # Update only if the query names already do not exist in file names, if so then operation is aborted.
         if len(updatedName):
-            print("\n Update can be initiated with following convention.  ")
-            print_files_from_dir(updatedName)
+            print("Details after reaming:\n")
+            print_files(updatedName)
         else:
-            print("No updated names found, aborting renaming.")
+            print("No updated names found, aborting renaming. \n")
             renaming_status = False
     else:
-        print("No specific date given in arguments.")
+        print("No specific date given in arguments. \n")
 
     print(f"Renaming status : {renaming_status} ")
     if renaming_status == True:
@@ -102,7 +133,7 @@ def main():
             # Currently only supports if the length is equal.
             rename_files(found_files,updatedName)
             print("Renaming complete")
-            print_files_from_dir(find_files(dir_path_date, file_format_to_find))
+            print_files(find_files(dir_path_date, file_format_to_find))
 
     else:
         print("Renaming option is disabled. ")
