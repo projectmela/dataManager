@@ -1,5 +1,6 @@
 # The code here is supposed to create empty directories 
-# This is used during fieldwork to create folders for the required datasets
+# This is used during fieldwork to create folders for the required datasets.
+
 import argparse
 import os
 
