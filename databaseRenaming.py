@@ -1,5 +1,6 @@
 import os
 import argparse 
+import platform
 
 def find_files(directory, file_format):
     
@@ -25,7 +26,11 @@ def update_file_name(files, queryDate):
         # Split the name of the file using the date 
         new_name = queryDate + file.split(queryDate)[1]
         # Create a new name for the file starting with the data
-        new_name = new_name.replace("\\","_")
+        system = platform.system()
+        if system == "Windows":
+            new_name = new_name.replace("\\","_")
+        elif system == "Linux":
+            new_name = new_name.replace("/","_")
         # Save the new name in the list
         updatedNames.append(new_name)
         
@@ -49,7 +54,7 @@ def main():
     parser.add_argument("--input", "-i", type=str, help="The path for data")
     parser.add_argument("--date", "-d", type=str, help="Set the date for which the data is to be produced.")
     parser.add_argument("--format", "-f", type=str, help="Format of the file", default=".SRT")
-    parser.add_argument("--rename", "-r", type=bool, help="Rename the files", default=False)
+    parser.add_argument("--rename", "-r", help="Rename the files", action="store_true", default= False)
 
     args = parser.parse_args()
 
@@ -61,7 +66,7 @@ def main():
     renaming_status = args.rename 
     date = ""
 
-    # If a data is given for processing renaming then find suitable files 
+    # If a data is given for processing renaming find suitable files 
     if args.date:
         date = args.date
         dir_path_date = os.path.join(dir_path, date)
@@ -89,7 +94,8 @@ def main():
     else:
         print("No specific date given in arguments.")
 
-    if renaming_status:
+    print(f"Renaming status : {renaming_status} ")
+    if renaming_status == True:
         if len(updatedName):
             # Currently only supports if the length is equal.
             rename_files(found_files,updatedName)
